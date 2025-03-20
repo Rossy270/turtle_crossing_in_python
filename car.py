@@ -1,45 +1,36 @@
 import random
 from turtle import Turtle, colormode
 
-X_POSITION = [-300, 300]
-Y_POSITION = [-100, 0, 100]
+LEVEL_SPEED = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
 colormode(255)
 
 def generate_random_color():
-    color = (
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255)
-    )
+    r = random.randint(0, 255)
+    g = random.randint(0 ,255)
+    b = random.randint(0, 255)
 
-    return color
+    return r,g,b
 
 class Car(Turtle):
-    def __init__(self):
-        super().__init__()
-        self.shapesize(stretch_wid = 1, stretch_len = random.randint(2, 4))
-        self.color(generate_random_color())
-        self.shape("square")
-        random_x = random.randint(5, 15)
-        self.x_speed = random.choice([-random_x, random_x])
+    def __init__(self, level):
+        super().__init__(shape="square")
+        self.shapesize(stretch_wid=1, stretch_len=2)
         self.penup()
-        self.initial_pos()
+        self.color(generate_random_color())
+        self.move_speed = LEVEL_SPEED[level - 1]
+        self.goto(random.randint(350, 800), random.randint(-250, 250))
 
     def move(self):
-        new_x = self.xcor() + self.x_speed
+        new_x = self.xcor() - self.move_speed
         self.goto(new_x, self.ycor())
 
-    def initial_pos(self):
-        new_x, new_y = (0, 0)
-        if self.x_speed > 0:
-            new_x = X_POSITION[0]
-        else:
-            new_x = X_POSITION[1]
+    def die(self):
+        self.reset()
+        self.hideturtle()
 
-        new_y = random.choice(Y_POSITION)
+    def update_speed(self, level):
+        if level > len(LEVEL_SPEED):
+            return
 
-        self.goto(new_x, new_y)
-
-    def remove(self):
-        self.goto(800,800)
+        self.move_speed = LEVEL_SPEED[level - 1]
